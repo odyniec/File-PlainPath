@@ -1,0 +1,4 @@
+.build
+File-PlainPath*
+.project
+pod2htm*.tmp
