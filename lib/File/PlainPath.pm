@@ -63,7 +63,7 @@ sub path {
 
 =func to_path
 
-An alias for L<path>. Use it when there's another module that exports a
+An alias for L</path>. Use it when there's another module that exports a
 subroutine named C<path> (such as L<File::Spec::Functions>).
 
 Example:
