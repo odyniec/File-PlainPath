@@ -47,18 +47,23 @@ my $separator_re;
 
 =func path
 
-Translates the provided path to OS-specific format.
+Translates the provided path to OS-specific format. If more than one path is
+specified, the paths are concatenated to produce the resulting path. 
 
-Example:
+Examples:
 
     my $path = path 'dir/file.txt';
+
+    my $path = path 'dir', 'subdir/file.txt';
+    # On Unix, this produces: "dir/subdir/file.txt" 
     
 =cut
 
 sub path {
-    my $path = shift;
+    my @paths = @_;
     
-    return File::Spec->catfile(split($separator_re, $path));
+    my @path_components = map { split($separator_re, $_) } @paths;
+    return File::Spec->catfile(@path_components);
 }
 
 =func to_path

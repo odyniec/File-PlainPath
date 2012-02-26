@@ -14,12 +14,18 @@ is(path('foo/bar'), File::Spec->catfile('foo', 'bar'),
     'Make path with the default separator');
 is(path('foo/bar\\baz'), File::Spec->catfile('foo', 'bar\\baz'),
     'Make path with backslash in file name');
+is(path('dir', 'foo/bar'), File::Spec->catfile('dir', 'foo', 'bar'),
+    'Make path with multiple components');
+is(path('dir/subdir', 'foo/bar'), File::Spec->catfile('dir', 'subdir', 'foo',
+    'bar'), 'Make path with multiple components');
 
 # Set backslash as directory separator
 File::PlainPath::set_separator('\\');
 
 is(path('foo\\bar'), File::Spec->catfile('foo', 'bar'),
     'Make path with separator set to "\\"');
+is(path('dir\\subdir', 'foo\\bar'), File::Spec->catfile('dir', 'subdir', 'foo',
+    'bar'), 'Make path with multiple components, separator set to "\\"');
 
 # Set pipe as directory separator
 File::PlainPath::set_separator('|');
@@ -27,7 +33,9 @@ File::PlainPath::set_separator('|');
 is(path('foo|bar'), File::Spec->catfile('foo', 'bar'),
     'Make path with separator set to "|"');
 is(path('foo|bar\\baz'), File::Spec->catfile('foo', 'bar\\baz'),
-    'Make path with backslash in file name');
+    'Make path with backslash in file name, separator set to "|"');
+is(path('dir|subdir', 'foo|bar'), File::Spec->catfile('dir', 'subdir', 'foo',
+    'bar'), 'Make path with multiple components, separator set to "|"');
 
 is(\&path, \&to_path, 'path and to_path are the same subroutine');
 

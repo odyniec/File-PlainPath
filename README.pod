@@ -4,7 +4,7 @@ File::PlainPath - Construct portable filesystem paths in a simple way
 
 =head1 VERSION
 
-version 0.01
+version 0.011
 
 =head1 SYNOPSIS
 
@@ -38,15 +38,19 @@ any other character can be designated as the separator:
 
 =head2 path
 
-Translates the provided path to OS-specific format.
+Translates the provided path to OS-specific format. If more than one path is
+specified, the paths are concatenated to produce the resulting path. 
 
-Example:
+Examples:
 
     my $path = path 'dir/file.txt';
 
+    my $path = path 'dir', 'subdir/file.txt';
+    # On Unix, this produces: "dir/subdir/file.txt" 
+
 =head2 to_path
 
-An alias for L<path>. Use it when there's another module that exports a
+An alias for L</path>. Use it when there's another module that exports a
 subroutine named C<path> (such as L<File::Spec::Functions>).
 
 Example:
