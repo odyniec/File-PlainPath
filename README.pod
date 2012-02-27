@@ -8,14 +8,18 @@ version 0.011
 
 =head1 SYNOPSIS
 
-    use File::PlainPath qw(path);
+    use File::PlainPath;
     
     # Forward slash is the default directory separator
     my $path = path 'dir/subdir/file.txt';
     
     # Set backslash as directory separator
-    File::PlainPath::set_separator('\\');   
+    use File::PlainPath '\\';   
     my $other_path = path 'dir\\other_dir\\other_file.txt';
+
+    # Forward slash is the default directory separator, but function name is to_path
+    use File::PlainPath to_path => '/';   
+    my $path = to_path 'dir/subdir/file.txt';
 
 =head1 DESCRIPTION
 
@@ -31,41 +35,12 @@ with a simpler notation:
 The default directory separator used in paths is the forward slash (C</>), but
 any other character can be designated as the separator:
 
-    File::PlainPath::set_separator(':');
+    use File::PlainPath ':';
     my $path = path 'dir:subdir:file.txt';
 
-=head1 FUNCTIONS
+=head1 IMPORT
 
-=head2 path
-
-Translates the provided path to OS-specific format. If more than one path is
-specified, the paths are concatenated to produce the resulting path. 
-
-Examples:
-
-    my $path = path 'dir/file.txt';
-
-    my $path = path 'dir', 'subdir/file.txt';
-    # On Unix, this produces: "dir/subdir/file.txt" 
-
-=head2 to_path
-
-An alias for L</path>. Use it when there's another module that exports a
-subroutine named C<path> (such as L<File::Spec::Functions>).
-
-Example:
-
-    use File::PlainPath qw(to_path);
-    
-    my $path = to_path 'dir/file.txt';
-
-=head2 set_separator
-
-Sets the character to be used as directory separator.
-
-Example:
-
-    File::PlainPath::set_separator(':');
+When importing File::PlainPath, if no arguments are given, the imported function is C<path> and it uses the separator C</>. Called with one argument, the function is still called C<path> but the separator is now that argument. Called with two arguments the first is the function name and the second is the separator. For examples see L</SYNOPSIS>.
 
 =head1 SEE ALSO
 
