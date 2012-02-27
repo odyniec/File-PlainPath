@@ -40,10 +40,9 @@ require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(path to_path);
 
-# Directory separator
-my $separator;
-# Regular expression that matches directory separators
-my $separator_re;
+# Mapping between package names and regular expressions that match directory
+# separators
+my %separator_re;
 
 =func path
 
@@ -61,8 +60,8 @@ Examples:
 
 sub path {
     my @paths = @_;
-    
-    my @path_components = map { split($separator_re, $_) } @paths;
+    my @path_components = map { split($separator_re{caller()} ||= '/', $_) }
+        @paths;
     return File::Spec->catfile(@path_components);
 }
 
@@ -92,12 +91,9 @@ Example:
 =cut
 
 sub set_separator {
-    $separator = quotemeta(shift);
-    $separator_re = qr{$separator};
+    my $separator = quotemeta(shift);
+    $separator_re{caller()} = qr{$separator};
 }
-
-# Set forward slash as the default directory separator
-set_separator('/');
 
 =head1 SEE ALSO
 

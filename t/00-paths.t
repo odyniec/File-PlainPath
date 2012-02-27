@@ -8,7 +8,7 @@ BEGIN {
 }
 
 is(path('foo'), File::Spec->catfile('foo'),
-    'Make path from a single dirctory/file name');
+    'Make path from a single directory/file name');
 
 is(path('foo/bar'), File::Spec->catfile('foo', 'bar'),
     'Make path with the default separator');
@@ -20,6 +20,7 @@ is(path('dir/subdir', 'foo/bar'), File::Spec->catfile('dir', 'subdir', 'foo',
     'bar'), 'Make path with multiple components');
 
 # Set backslash as directory separator
+print STDERR "1\n";
 File::PlainPath::set_separator('\\');
 
 is(path('foo\\bar'), File::Spec->catfile('foo', 'bar'),
