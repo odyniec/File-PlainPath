@@ -8,14 +8,18 @@ use File::Spec;
 
 =head1 SYNOPSIS
 
-    use File::PlainPath qw(path);
+    use File::PlainPath;
     
     # Forward slash is the default directory separator
     my $path = path 'dir/subdir/file.txt';
     
     # Set backslash as directory separator
-    File::PlainPath::set_separator('\\');   
+    use File::PlainPath '\\';   
     my $other_path = path 'dir\\other_dir\\other_file.txt';
+
+    # Forward slash is the default directory separator, but function name is to_path
+    use File::PlainPath to_path => '/';   
+    my $path = to_path 'dir/subdir/file.txt';
 
 =head1 DESCRIPTION
 
@@ -31,73 +35,33 @@ with a simpler notation:
 The default directory separator used in paths is the forward slash (C</>), but
 any other character can be designated as the separator:
 
-    File::PlainPath::set_separator(':');
+    use File::PlainPath ':';
     my $path = path 'dir:subdir:file.txt';
 
+=head1 IMPORT
+
+When importing File::PlainPath, if no arguments are given, the imported function is C<path> and it uses the separator C</>. Called with one argument, the function is still called C<path> but the separator is now that argument. Called with two arguments the first is the function name and the second is the separator. For examples see L</SYNOPSIS>.
+
 =cut
 
-require Exporter;
-our @ISA = qw(Exporter);
-our @EXPORT_OK = qw(path to_path);
+sub import {
+  my $class     = shift;
+  my $caller    = caller;
+  my $separator = pop || '/';
+  my $name      = pop || 'path';
 
-# Directory separator
-my $separator;
-# Regular expression that matches directory separators
-my $separator_re;
+  my $separator_re = qr/\Q$separator\E/;
 
-=func path
-
-Translates the provided path to OS-specific format. If more than one path is
-specified, the paths are concatenated to produce the resulting path. 
-
-Examples:
-
-    my $path = path 'dir/file.txt';
-
-    my $path = path 'dir', 'subdir/file.txt';
-    # On Unix, this produces: "dir/subdir/file.txt" 
-    
-=cut
-
-sub path {
+  my $sub = sub {
     my @paths = @_;
     
     my @path_components = map { split($separator_re, $_) } @paths;
     return File::Spec->catfile(@path_components);
+  };
+
+  no strict 'refs';
+  *{$caller . "::" . $name} = $sub;
 }
-
-=func to_path
-
-An alias for L</path>. Use it when there's another module that exports a
-subroutine named C<path> (such as L<File::Spec::Functions>).
-
-Example:
-
-    use File::PlainPath qw(to_path);
-    
-    my $path = to_path 'dir/file.txt';
-
-=cut
-
-*to_path = *path;
-
-=func set_separator
-
-Sets the character to be used as directory separator.
-
-Example:
-
-    File::PlainPath::set_separator(':');
-
-=cut
-
-sub set_separator {
-    $separator = quotemeta(shift);
-    $separator_re = qr{$separator};
-}
-
-# Set forward slash as the default directory separator
-set_separator('/');
 
 =head1 SEE ALSO
 
