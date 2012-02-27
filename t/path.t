@@ -3,9 +3,9 @@
 use Test::More;
 use File::Spec;
 
-BEGIN {
-    use_ok('File::PlainPath', qw(path to_path));
-}
+use File::PlainPath;
+
+ok( __PACKAGE__->can('path'), "path is imported");
 
 is(path('foo'), File::Spec->catfile('foo'),
     'Make path from a single dirctory/file name');
@@ -20,7 +20,10 @@ is(path('dir/subdir', 'foo/bar'), File::Spec->catfile('dir', 'subdir', 'foo',
     'bar'), 'Make path with multiple components');
 
 # Set backslash as directory separator
-File::PlainPath::set_separator('\\');
+{
+  local $SIG{__WARN__} = sub{}; #prevent redefine warnings
+  File::PlainPath->import('\\');
+}
 
 is(path('foo\\bar'), File::Spec->catfile('foo', 'bar'),
     'Make path with separator set to "\\"');
@@ -28,15 +31,13 @@ is(path('dir\\subdir', 'foo\\bar'), File::Spec->catfile('dir', 'subdir', 'foo',
     'bar'), 'Make path with multiple components, separator set to "\\"');
 
 # Set pipe as directory separator
-File::PlainPath::set_separator('|');
+File::PlainPath->import(path_pipe => '|');
 
-is(path('foo|bar'), File::Spec->catfile('foo', 'bar'),
+is(path_pipe('foo|bar'), File::Spec->catfile('foo', 'bar'),
     'Make path with separator set to "|"');
-is(path('foo|bar\\baz'), File::Spec->catfile('foo', 'bar\\baz'),
+is(path_pipe('foo|bar\\baz'), File::Spec->catfile('foo', 'bar\\baz'),
     'Make path with backslash in file name, separator set to "|"');
-is(path('dir|subdir', 'foo|bar'), File::Spec->catfile('dir', 'subdir', 'foo',
+is(path_pipe('dir|subdir', 'foo|bar'), File::Spec->catfile('dir', 'subdir', 'foo',
     'bar'), 'Make path with multiple components, separator set to "|"');
-
-is(\&path, \&to_path, 'path and to_path are the same subroutine');
 
 done_testing;
