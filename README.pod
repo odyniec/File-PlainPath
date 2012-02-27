@@ -4,7 +4,7 @@ File::PlainPath - Construct portable filesystem paths in a simple way
 
 =head1 VERSION
 
-version 0.011
+version 0.02
 
 =head1 SYNOPSIS
 
