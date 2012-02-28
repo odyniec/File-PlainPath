@@ -31,8 +31,10 @@ with a simpler notation:
 The default directory separator used in paths is the forward slash (C</>), but
 any other character can be designated as the separator:
 
-    File::PlainPath::set_separator(':');
+    use File::PlainPath -split => ':';
     my $path = path 'dir:subdir:file.txt';
+
+This is lexically scoped.
 
 =cut
 
@@ -40,9 +42,28 @@ require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(path to_path);
 
-# Mapping between package names and regular expressions that match directory
-# separators
-my %separator_re;
+sub import
+{
+    my $class  = shift;
+    my %opts   = ();
+    my @export = ();
+    while (@_) {
+        my $arg = shift;
+        if ($arg =~ m{^ [-] (.+) $}x)
+        {
+            $opts{$1} = shift;
+            next;
+        }
+        push @export, $arg;
+    }
+    
+    if (exists $opts{'split'}) {
+        $^H{+__PACKAGE__} = $opts{'split'};
+    }
+    
+    @_ = ($class, @export);
+    goto \&Exporter::import;
+}
 
 =func path
 
@@ -58,9 +79,13 @@ Examples:
     
 =cut
 
-sub path {
+sub path {    
+    my @caller       = caller(0);
+    my $separator    = exists $caller[10]{+__PACKAGE__} ? $caller[10]{+__PACKAGE__} : '/';
+    my $separator_re = qr{ \Q$separator\E }x;
+    
     my @paths = @_;
-    my @path_components = map { split($separator_re{caller()} ||= '/', $_) }
+    my @path_components = map { split($separator_re, $_) }
         @paths;
     return File::Spec->catfile(@path_components);
 }
@@ -79,21 +104,6 @@ Example:
 =cut
 
 *to_path = *path;
-
-=func set_separator
-
-Sets the character to be used as directory separator.
-
-Example:
-
-    File::PlainPath::set_separator(':');
-
-=cut
-
-sub set_separator {
-    my $separator = quotemeta(shift);
-    $separator_re{caller()} = qr{$separator};
-}
 
 =head1 SEE ALSO
 
