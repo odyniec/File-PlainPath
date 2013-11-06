@@ -4,6 +4,8 @@ package File::PlainPath;
 
 # ABSTRACT: Construct portable filesystem paths in a simple way
 
+# VERSION
+
 use File::Spec;
 
 =head1 SYNOPSIS
