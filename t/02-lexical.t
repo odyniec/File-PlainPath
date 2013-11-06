@@ -1,12 +1,12 @@
 #!perl -T
 
 use Test::More tests => 3;
-use File::PlainPath -split => '*', qw(path);
+use File::PlainPath -separator => '*', qw(path);
 
 my $first = path 'a*b&b*c';
 
 my $second = do {
-    use File::PlainPath -split => '&';
+    use File::PlainPath -separator => '&';
     path 'a*b&b*c';
 };
 

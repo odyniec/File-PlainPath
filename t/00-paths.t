@@ -20,8 +20,7 @@ is(path('dir/subdir', 'foo/bar'), File::Spec->catfile('dir', 'subdir', 'foo',
     'bar'), 'Make path with multiple components');
 
 # Set backslash as directory separator
-print STDERR "1\n";
-use File::PlainPath -split => '\\';
+use File::PlainPath -separator => '\\';
 
 is(path('foo\\bar'), File::Spec->catfile('foo', 'bar'),
     'Make path with separator set to "\\"');
@@ -29,7 +28,7 @@ is(path('dir\\subdir', 'foo\\bar'), File::Spec->catfile('dir', 'subdir', 'foo',
     'bar'), 'Make path with multiple components, separator set to "\\"');
 
 # Set pipe as directory separator
-use File::PlainPath -split => '|';
+use File::PlainPath -separator => '|';
 
 is(path('foo|bar'), File::Spec->catfile('foo', 'bar'),
     'Make path with separator set to "|"');

@@ -3,7 +3,7 @@
 package First;
 
 use File::Spec;
-use File::PlainPath qw(path -split -);
+use File::PlainPath qw(path -separator -);
 
 our $path = path 'foo-bar+foo-bar+foo';
 
@@ -11,7 +11,7 @@ our $path = path 'foo-bar+foo-bar+foo';
 package Second;
 
 use File::Spec;
-use File::PlainPath qw(path -split +);
+use File::PlainPath qw(path -separator +);
 
 our $path = path 'foo-bar+foo-bar+foo';
 

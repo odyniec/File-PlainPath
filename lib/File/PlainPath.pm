@@ -14,7 +14,7 @@ use File::Spec;
     my $path = path 'dir/subdir/file.txt';
     
     # Set backslash as directory separator
-    File::PlainPath::set_separator('\\');   
+    use File::PlainPath -separator => '\\';   
     my $other_path = path 'dir\\other_dir\\other_file.txt';
 
 =head1 DESCRIPTION
@@ -31,7 +31,7 @@ with a simpler notation:
 The default directory separator used in paths is the forward slash (C</>), but
 any other character can be designated as the separator:
 
-    use File::PlainPath -split => ':';
+    use File::PlainPath -separator => ':';
     my $path = path 'dir:subdir:file.txt';
 
 This is lexically scoped.
@@ -57,8 +57,8 @@ sub import
         push @export, $arg;
     }
     
-    if (exists $opts{'split'}) {
-        $^H{+__PACKAGE__} = $opts{'split'};
+    if (exists $opts{'separator'}) {
+        $^H{+__PACKAGE__} = $opts{'separator'};
     }
     
     @_ = ($class, @export);
@@ -81,12 +81,13 @@ Examples:
 
 sub path {    
     my @caller       = caller(0);
-    my $separator    = exists $caller[10]{+__PACKAGE__} ? $caller[10]{+__PACKAGE__} : '/';
+    my $separator    = exists $caller[10]{+__PACKAGE__} ?
+        $caller[10]{+__PACKAGE__} : '/';
     my $separator_re = qr{ \Q$separator\E }x;
-    
+
     my @paths = @_;
-    my @path_components = map { split($separator_re, $_) }
-        @paths;
+    my @path_components = map { split($separator_re, $_) } @paths;
+
     return File::Spec->catfile(@path_components);
 }
 
