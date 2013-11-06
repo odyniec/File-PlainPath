@@ -96,23 +96,9 @@ L<https://github.com/odyniec/File-PlainPath>
 
 Michal Wojciechowski <odyniec@cpan.org>
 
-=head1 CONTRIBUTORS
-
-=over 4
-
-=item *
-
-Michal Wojciechowski <odyniec@odyniec.net>
-
-=item *
-
-Michał Wojciechowski <odyniec@odyniec.eu.org>
-
-=item *
+=head1 CONTRIBUTOR
 
 Toby Inkster <tobyink@cpan.org>
-
-=back
 
 =head1 COPYRIGHT AND LICENSE
 
